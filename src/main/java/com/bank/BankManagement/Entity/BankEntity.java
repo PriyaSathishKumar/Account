@@ -8,7 +8,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "accountTable")
+@Table(name = "account")
 public class BankEntity {
     @Id
     @GeneratedValue

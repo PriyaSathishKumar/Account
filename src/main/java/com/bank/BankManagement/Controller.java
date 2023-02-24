@@ -3,10 +3,7 @@ import com.bank.BankManagement.Entity.BankEntity;
 import com.bank.BankManagement.Service.BankService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,7 +12,7 @@ import java.util.List;
 //import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("/bank")
+@RequestMapping("/account")
 public class Controller {
     private static final Logger logger = Logger.getLogger(String.valueOf(Controller.class));
 
@@ -23,11 +20,21 @@ public class Controller {
     private BankService service;
     @PostMapping("/addAccount")
     //Adding New Account Details
-    public BankEntity addAccount(@RequestBody BankEntity entity) {
-        logger.info("Account Added Msg ");
-        logger.info("Priya");
-        return service.saveAccount(entity);
+//    public BankEntity addAccount(@RequestBody BankEntity entity) {
+//        logger.info("Account Added Msg ");
+//        logger.info("Priya");
+//        return service.saveAccount(entity);
+//    }
+    @ResponseStatus(HttpStatus.CREATED)
+    public BankEntity createAccountForCustomer(@PathVariable Long customerId) {
+        BankEntity entity = service.getAccountById(customerId);
+        if (customer == null) {
+            throw new CustomerNotFoundException("Customer with ID " + customerId + " not found");
+        }
+        BankEntity entity = service.createAccountForCustomer(customer);
+        return entity;
     }
+
     @PostMapping("/addAccounts")
     //Adding Multiple Account Details
     public List<BankEntity> addAccounts(@RequestBody List<BankEntity> entities) {
