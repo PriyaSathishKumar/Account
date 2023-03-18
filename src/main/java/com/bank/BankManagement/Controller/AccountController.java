@@ -1,6 +1,7 @@
-package com.bank.BankManagement;
-import com.bank.BankManagement.Entity.BankEntity;
-import com.bank.BankManagement.Service.BankService;
+package com.bank.BankManagement.Controller;
+import com.bank.BankManagement.CustomerNotFoundException;
+import com.bank.BankManagement.Entity.AccountEntity;
+import com.bank.BankManagement.Service.AccountService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -13,46 +14,42 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/account")
-public class Controller {
-    private static final Logger logger = Logger.getLogger(String.valueOf(Controller.class));
+public class AccountController {
+    private static final Logger logger = Logger.getLogger(String.valueOf(AccountController.class));
 
+     RestTemplate restTemplate=new RestTemplate();
     @Autowired
-    private BankService service;
-    @PostMapping("/addAccount")
-    //Adding New Account Details
-//    public BankEntity addAccount(@RequestBody BankEntity entity) {
-//        logger.info("Account Added Msg ");
-//        logger.info("Priya");
-//        return service.saveAccount(entity);
-//    }
-    @ResponseStatus(HttpStatus.CREATED)
-    public BankEntity createAccountForCustomer(@PathVariable Long customerId) {
-        BankEntity entity = service.getAccountById(customerId);
-        if (customer == null) {
-            throw new CustomerNotFoundException("Customer with ID " + customerId + " not found");
-        }
-        BankEntity entity = service.createAccountForCustomer(customer);
-        return entity;
+    private AccountService service;
+    @Autowired
+    private AccountEntity entity;
+    @PostMapping(value="/addAccount")
+    public ResponseEntity<AccountEntity> createAccountForCustomer(@RequestBody AccountEntity account) {
+//        int customerId= entity.getCustomerId();
+//        if (customerId) {
+//            new CustomerNotFoundException("Customer with ID " + customerId + " not found");
+//        }
+//        AccountEntity entity = service.createAccountForCustomer(customer);
+        return service.createAccountForCustomer(account);
     }
 
     @PostMapping("/addAccounts")
     //Adding Multiple Account Details
-    public List<BankEntity> addAccounts(@RequestBody List<BankEntity> entities) {
+    public List<AccountEntity> addAccounts(@RequestBody List<AccountEntity> entities) {
         logger.info("Multiple Account Added ");
-        return service.getAccounts(entities);
+        return service.addAccounts(entities);
     }
+
     @GetMapping("/accounts")
-    public List<BankEntity> findAllAccount() {
+    public List<AccountEntity> findAllAccount() {
         logger.info("Getting All Accounts "+service.getAccounts());
         return service.getAccounts();
     }
     @GetMapping("/accountByNumber/{accountNumber}")
-    public BankEntity findAccountById(@PathVariable int accountNumber) {
+    public AccountEntity findAccountById(@PathVariable int accountNumber) {
         logger.info("Get Account Details by AccountNumber "+accountNumber);
         return service.getAccountById(accountNumber);
     }
-    @Autowired
-    RestTemplate restTemplate;
+
     @RequestMapping(value = "/template/customer")
     public String getCustomerList() {
         HttpHeaders headers = new HttpHeaders();
@@ -68,7 +65,7 @@ public class Controller {
 //            return service.getAccountByName(customerName);
 //        }
     @PutMapping("/updateAccount")
-    public BankEntity updateAccount(@RequestBody BankEntity entity) {
+    public AccountEntity updateAccount(@RequestBody AccountEntity entity) {
         logger.info("Account Updated Successfully "+entity);
         return service.updateAccount(entity);
     }

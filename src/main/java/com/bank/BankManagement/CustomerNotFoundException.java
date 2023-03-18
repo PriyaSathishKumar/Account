@@ -1,6 +1,6 @@
 package com.bank.BankManagement;
 
-public class CustomerNotFoundException {
+public class CustomerNotFoundException extends Throwable {
 
         public CustomerNotFoundException(String message) {
             super();
